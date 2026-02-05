@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16}}-alpine
+    container_name: evalc1
+    environment:
+      POSTGRES_DB: evalc1
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db:/docker-entrypoint-initdb.d
+
+  app:
+    build:
+      context: ./eval-c1-awos
+      dockerfile: Dockerfile
+    container_name: awos_app
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/evalc1
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+
+
+volumes:
+  postgres_data:
