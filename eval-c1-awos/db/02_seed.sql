@@ -1,8 +1,8 @@
-INSERT INTO status (name) VALUES 
-('pendiente'), ('completado'), ('cancelado');
+INSERT INTO status (id, name) VALUES 
+(1,'pendiente'), (2,'completado'), (3,'cancelado');
 
-INSERT INTO p_methods (name) VALUES 
-('efectivo'), ('tarjeta'), ('transferencia'), ('cacao');
+INSERT INTO p_methods (id, name) VALUES 
+(1,'efectivo'), (2,'tarjeta'), (3,'transferencia');
 
 INSERT INTO customers (name, email) VALUES 
 ('Alicia Ocaña', 'alicia@email.com'),
@@ -14,40 +14,35 @@ INSERT INTO customers (name, email) VALUES
 ('Luis Angel Perez', 'ngen_luis@email.com'),
 ('Viviana Rojo', 'profe-laAmo@email.com');
 
+-- Insertar clientes generados con un ID auto-incrementado
 INSERT INTO customers (name, email)
 SELECT 
   'Customer ' || generate_series,
   'customer' || generate_series || '@email.com'
 FROM generate_series(11, 50);
 
-INSERT INTO categories (name) VALUES 
-('Bebidas frías'), ('Bebidas calientes'), ('Panaderia'), ('Postres'), ('Desayunos'), ('Comidas');
+INSERT INTO categories (id, name) VALUES 
+(1,'Bebidas frías'), (2,'Bebidas calientes'), (3,'Panaderia'), (4,'Postres'), (5,'Desayunos'), (6,'Comidas');
 
-INSERT INTO products (name, category_id, stock, active) VALUES 
-
-('Coca Cola', 1, 9, true),
-('Limonada', 1, 20, true),
-('Agua mineral', 1, 300, true),
-
-('Espresso', 2, 1, true),
-('Cappuccino', 2, 80, true),
-('Latte', 2, 90, true),
-
-('Crossaint', 3, 60, true),
-('Muffin', 3, 50, true),
-('Brownie', 4, 30, true),
-
-('Cheesecake', 4, 10, true),
-('Pastel de chocolate', 4, 15, true),
-('Pan de elote', 4, 25, true),
-
-('Huevos rancheros', 5, 20, true),
-('Chilaquiles con pollo', 5, 90, true),
-('Ckub sándwich', 5, 80, true),
-
-('Milanea de pollo', 6, 40, true),
-('Albondigas', 6, 70, true),
-('Caldo de pollo', 6, 60, true); 
+INSERT INTO products (id, name, category_id, stock, active) VALUES 
+(1, 'Coca Cola', 1, 9, true),
+(2, 'Limonada', 1, 20, true),
+(3, 'Agua mineral', 1, 300, true),
+(4, 'Espresso', 2, 1, true),
+(5, 'Cappuccino', 2, 80, true),
+(6, 'Latte', 2, 90, true),
+(7, 'Crossaint', 3, 60, true),
+(8, 'Muffin', 3, 50, true),
+(9, 'Brownie', 4, 30, true),
+(10, 'Cheesecake', 4, 10, true),
+(11, 'Pastel de chocolate', 4, 15, true),
+(12, 'Pan de elote', 4, 25, true),
+(13, 'Huevos rancheros', 5, 20, true),
+(14, 'Chilaquiles con pollo', 5, 90, true),
+(15, 'Ckub sándwich', 5, 80, true),
+(16, 'Milanesa de pollo', 6, 40, true),
+(17, 'Albondigas', 6, 70, true),
+(18, 'Caldo de pollo', 6, 60, true);
 
 INSERT INTO orders (id_customer, created_at, status)
 SELECT 

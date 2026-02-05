@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:16}}-alpine
+    image: postgres:16-alpine
     container_name: evalc1
     environment:
       POSTGRES_DB: evalc1
@@ -16,9 +16,9 @@ services:
 
   app:
     build:
-      context: ./eval-c1-awos
+      context: .
       dockerfile: Dockerfile
-    container_name: awos_app
+    container_name: eval-c1-awos
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/evalc1
       NODE_ENV: production
