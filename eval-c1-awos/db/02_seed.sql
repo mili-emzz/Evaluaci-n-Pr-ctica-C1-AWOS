@@ -5,21 +5,20 @@ INSERT INTO p_methods (id, name) VALUES
 (1,'efectivo'), (2,'tarjeta'), (3,'transferencia');
 
 INSERT INTO customers (name, email) VALUES 
-('Alicia Ocaña', 'alicia@email.com'),
-('Antonio Selvas', 'the_tito@email.com'),
-('Nadia Guerra', 'naddilu@email.com'),
+('Alicia', 'alicia@email.com'),
+('Antonio', 'the_tito@email.com'),
+('Nadia ', 'naddilu@email.com'),
 ('Antonio De Hoyos', 'toniboni@email.com'),
-('Carlos Ochoa', 'charly@email.com'),
-('Emma Reyes', 'emma-prec@email.com'),
-('Luis Angel Perez', 'ngen_luis@email.com'),
-('Viviana Rojo', 'profe-laAmo@email.com');
-
--- Insertar clientes generados con un ID auto-incrementado
-INSERT INTO customers (name, email)
-SELECT 
-  'Customer ' || generate_series,
-  'customer' || generate_series || '@email.com'
-FROM generate_series(11, 50);
+('Carlos', 'charly@email.com'),
+('Emma', 'emma-prec@email.com'),
+('Luis Angel', 'ngen_luis@email.com'),
+('Viviana', 'profe-laAmo@email.com'),
+('Sofia ', 'sofia-marquez@email.com'),
+('Diego ', 'diego-zarate@email.com'),
+('Isaac', 'isaac-mendoza@email.com'),
+('Brian', 'brian@email.com'),
+('Nestor', 'nestor@email.com')
+;
 
 INSERT INTO categories (id, name) VALUES 
 (1,'Bebidas frías'), (2,'Bebidas calientes'), (3,'Panaderia'), (4,'Postres'), (5,'Desayunos'), (6,'Comidas');
@@ -44,26 +43,3 @@ INSERT INTO products (id, name, category_id, stock, active) VALUES
 (17, 'Albondigas', 6, 70, true),
 (18, 'Caldo de pollo', 6, 60, true);
 
-
-
-INSERT INTO order_items (order_id, product_id, qty, price)
-SELECT 
-  o.id,
-  (random() * 13 + 1)::int AS product_id,
-  (random() * 3 + 1)::int AS qty,
-  CASE 
-    WHEN random() < 0.3 THEN 250
-    WHEN random() < 0.6 THEN 350
-    WHEN random() < 0.9 THEN 450
-    ELSE 550
-  END AS price
-FROM orders o
-CROSS JOIN generate_series(1, (random() * 2 + 1)::int);
-
-INSERT INTO payments (order_id, method_id, amount)
-SELECT 
-  o.id,
-  (random() * 3 + 1)::int AS method_id,
-  (SELECT SUM(qty * price) FROM order_items WHERE order_id = o.id) AS amount
-FROM orders o
-WHERE o.status = 2;
