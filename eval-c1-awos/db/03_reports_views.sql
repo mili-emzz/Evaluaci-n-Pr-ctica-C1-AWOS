@@ -1,6 +1,12 @@
--- minimo 5 views lpm --
+-- View 1: vw_sales_daily
+-- Descripción: Ventas diarias agregadas con métricas clave
+-- Grain: 1 fila por día
+-- Métricas: total_ventas, tickets, ticket_promedio
+-- Características: GROUP BY, agregados (SUM, COUNT, AVG), campo calculado
+-- Verify:
+-- SELECT * FROM vw_sales_daily WHERE sale_date >= '2024-11-01' ORDER BY sale_date DESC LIMIT 10;
+-- SELECT * FROM vw_sales_daily WHERE sale_date BETWEEN '2024-12-01' AND '2024-12-31';
 
--- vw_sales_daiy
 CREATE OR REPLACE VIEW vw_sales_daily AS
 SELECT 
   DATE(o.created_at) AS sale_date,
@@ -19,7 +25,15 @@ GROUP BY DATE(o.created_at)
 HAVING SUM(p.amount) > 0
 ORDER BY sale_date DESC;
 
--- vw_inventory_risk
+-- View 2: vw_inventory_risk
+-- Descripción: Productos con stock bajo agrupados por categoría
+-- Grain: 1 fila por producto en riesgo
+-- Métricas: stock_level, risk_percentage, category_avg_stock
+-- Características: CASE, COALESCE, Window Function, GROUP BY
+-- Verify:
+-- SELECT * FROM vw_inventory_risk WHERE risk_level = 'critical';
+-- SELECT * FROM vw_inventory_risk WHERE category_id = 1;
+
 CREATE OR REPLACE VIEW vw_inventory_risk AS
 WITH category_stats AS (
   SELECT 
@@ -49,7 +63,15 @@ INNER JOIN categories c ON p.category_id = c.id
 LEFT JOIN category_stats cs ON p.category_id = cs.category_id
 WHERE p.active = true AND p.stock <= 20;
 
--- vw_customer_value
+-- View 3: vw_customer_value
+-- Descripción: Valor total por cliente con segmentación
+-- Grain: 1 fila por cliente
+-- Métricas: total_spent, order_count, avg_order_value
+-- Características: CTE, GROUP BY, HAVING, CASE para segmentación
+-- Verify:
+-- SELECT * FROM vw_customer_value ORDER BY total_spent DESC LIMIT 20;
+-- SELECT segment, COUNT(*) FROM vw_customer_value GROUP BY segment;
+
 CREATE OR REPLACE VIEW vw_customer_value AS
 WITH customer_orders AS (
   SELECT 
@@ -83,8 +105,14 @@ FROM customer_orders
 WHERE total_spent > 0
 ORDER BY total_spent DESC;
 
-
--- vw_top_products_ranked
+-- View 4: vw_top_products_ranked
+-- Descripción: Ranking de productos por revenue y unidades vendidas
+-- Grain: 1 fila por producto
+-- Métricas: total_revenue, units_sold, ranking
+-- Características: Window Function (RANK), GROUP BY, campo calculado
+-- Verify:
+-- SELECT * FROM vw_top_products_ranked WHERE product_name LIKE '%coffee%' LIMIT 10;
+-- SELECT * FROM vw_top_products_ranked ORDER BY revenue_rank LIMIT 20;
 
 CREATE OR REPLACE VIEW vw_top_products_ranked AS
  WITH product_sales AS (
@@ -111,7 +139,15 @@ CREATE OR REPLACE VIEW vw_top_products_ranked AS
     round(total_revenue::numeric / NULLIF(units_sold, 0)::numeric, 2) AS avg_price_per_unit
    FROM product_sales;
 
---vw_customer_value
+-- View 5: vw_customer_value
+-- Descripción: Valor total por cliente con segmentación
+-- Grain: 1 fila por cliente
+-- Métricas: total_spent, order_count, avg_order_value
+-- Características: CTE, GROUP BY, HAVING, CASE para segmentación
+-- Verify:
+-- SELECT * FROM vw_customer_value ORDER BY total_spent DESC LIMIT 20;
+-- SELECT segment, COUNT(*) FROM vw_customer_value GROUP BY segment;
+
 CREATE OR REPLACE VIEW vw_customer_value AS
  WITH customer_orders AS (
          SELECT c.id AS customer_id,
@@ -143,35 +179,47 @@ CREATE OR REPLACE VIEW vw_customer_value AS
   WHERE total_spent > 0
   ORDER BY total_spent DESC;
 
---vw_payment_mix
+-- View 6: vw_payment_mix
+-- Descripción: Distribución de métodos de pago con análisis de tendencias
+-- Grain: 1 fila por método de pago
+-- Métricas: transacciones, monto total, porcentaje, ranking por volumen
+-- Características: GROUP BY, agregados, window function (RANK), CASE para categorización
+-- Verify:
+-- SELECT * FROM vw_payment_mix ORDER BY rank_by_amount;
+-- SELECT SUM(percentage) FROM vw_payment_mix; -- Debería ser aproximadamente 100%
 
 CREATE OR REPLACE VIEW vw_payment_mix AS
 WITH payment_totals AS (
   SELECT 
     pm.id AS method_id,
     pm.name AS method_name,
-    COUNT(p.id) AS transaction_count,
-    COALESCE(SUM(p.amount), 0) AS total_amount
+    COUNT(DISTINCT p.id) AS transaction_count,
+    COUNT(DISTINCT p.order_id) AS orders_processed,
+    COALESCE(SUM(p.amount), 0) AS total_amount,
+    COALESCE(AVG(p.amount), 0) AS avg_transaction
   FROM p_methods pm
   LEFT JOIN payments p ON pm.id = p.method_id
   GROUP BY pm.id, pm.name
 ),
-grand_total AS (
-  SELECT SUM(total_amount) AS overall_total
-  FROM payment_totals
+totals AS (
+  SELECT SUM(total_amount) AS overall_total FROM payment_totals
 )
 SELECT 
   pt.method_id,
   pt.method_name,
   pt.transaction_count,
+  pt.orders_processed,
   pt.total_amount,
-  ROUND((pt.total_amount::numeric / NULLIF(gt.overall_total, 0)) * 100, 2) AS percentage,
+  ROUND(pt.avg_transaction, 2) AS avg_transaction,
+  ROUND((pt.total_amount::numeric / NULLIF(t.overall_total, 0)) * 100, 2) AS percentage,
+  RANK() OVER (ORDER BY pt.total_amount DESC) AS rank_by_amount,
+  RANK() OVER (ORDER BY pt.transaction_count DESC) AS rank_by_frequency,
   CASE 
-    WHEN pt.total_amount = 0 THEN 'unused'
-    WHEN (pt.total_amount::numeric / NULLIF(gt.overall_total, 0)) * 100 > 40 THEN 'dominant'
-    WHEN (pt.total_amount::numeric / NULLIF(gt.overall_total, 0)) * 100 > 20 THEN 'significant'
-    ELSE 'minor'
-  END AS usage_category
+    WHEN pt.total_amount = 0 THEN 'sin movimiento'
+    WHEN (pt.total_amount::numeric / NULLIF(t.overall_total, 0)) > 0.4 THEN 'principal'
+    WHEN (pt.total_amount::numeric / NULLIF(t.overall_total, 0)) > 0.2 THEN 'secundario'
+    ELSE 'método alternativo'
+  END AS preference_level
 FROM payment_totals pt
-CROSS JOIN grand_total gt
+CROSS JOIN totals t
 ORDER BY pt.total_amount DESC;
