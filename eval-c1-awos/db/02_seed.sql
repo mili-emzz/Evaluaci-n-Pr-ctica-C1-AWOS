@@ -13,7 +13,6 @@ INSERT INTO customers (name, email) VALUES
 ('Emma', 'emma-prec@email.com'),
 ('Luis Angel', 'ngen_luis@email.com'),
 ('Viviana', 'profe-laAmo@email.com'),
-('Sofia ', 'sofia-marquez@email.com'),
 ('Diego ', 'diego-zarate@email.com'),
 ('Isaac', 'isaac-mendoza@email.com'),
 ('Brian', 'brian@email.com'),
@@ -38,8 +37,72 @@ INSERT INTO products (id, name, category_id, stock, active) VALUES
 (12, 'Pan de elote', 4, 25, true),
 (13, 'Huevos rancheros', 5, 20, true),
 (14, 'Chilaquiles con pollo', 5, 90, true),
-(15, 'Ckub sándwich', 5, 80, true),
+(15, 'Club sándwich', 5, 80, true),
 (16, 'Milanesa de pollo', 6, 40, true),
 (17, 'Albondigas', 6, 70, true),
 (18, 'Caldo de pollo', 6, 60, true);
+
+
+INSERT INTO orders (id_customer, created_at, status) VALUES
+(1, CURRENT_DATE - 60, 2), 
+(2, CURRENT_DATE - 59, 1),
+(5, CURRENT_DATE - 58, 3),
+(1, CURRENT_DATE - 57, 3), 
+(3, CURRENT_DATE - 56, 2),
+(8, CURRENT_DATE - 55, 1), 
+(4, CURRENT_DATE - 54, 2),
+(2, CURRENT_DATE - 53, 2), 
+(6, CURRENT_DATE - 52, 2),
+(1, CURRENT_DATE - 51, 2),
+(7,  CURRENT_DATE - 50, 1),
+(2, CURRENT_DATE - 49, 2), 
+(8, CURRENT_DATE - 48, 3), 
+(1, CURRENT_DATE - 47, 3), -- Alicia
+(11, CURRENT_DATE - 46, 1), 
+(12, CURRENT_DATE - 45, 2),
+(3, CURRENT_DATE - 44, 2),
+(12, CURRENT_DATE - 43, 2),
+(8, CURRENT_DATE - 42, 2), 
+(2, CURRENT_DATE - 41, 2); 
+(4,  CURRENT_DATE - 40, 2),
+(1, CURRENT_DATE - 39, 2), -- Alicia
+(5, CURRENT_DATE - 38, 1),
+(8, CURRENT_DATE - 37, 2), -- Viviana
+(6, CURRENT_DATE - 36, 2),
+(2, CURRENT_DATE - 35, 2),
+(7, CURRENT_DATE - 34, 1),
+(12, CURRENT_DATE - 33, 1),
+(1, CURRENT_DATE - 32, 2), -- Alicia
+(11, CURRENT_DATE - 31, 3),
+(10, CURRENT_DATE - 30, 2),
+(8, CURRENT_DATE - 29, 1), 
+(9, CURRENT_DATE - 28, 2),
+(2, CURRENT_DATE - 27, 3), 
+(8, CURRENT_DATE - 26, 2),
+(7, CURRENT_DATE - 25, 2),
+(1, CURRENT_DATE - 24, 1), -- Alicia
+(6, CURRENT_DATE - 23, 2),
+(5, CURRENT_DATE - 22, 2),
+(8, CURRENT_DATE - 21, 2); -- Viviana
+(4, CURRENT_DATE - 20, 2),
+(1, CURRENT_DATE - 19, 2), 
+(4, CURRENT_DATE - 18, 2),
+(8, CURRENT_DATE - 17, 2), 
+(3, CURRENT_DATE - 16, 3),
+(2, CURRENT_DATE - 15, 2),
+(5, CURRENT_DATE - 14, 2),
+(6, CURRENT_DATE - 13, 2),
+(1, CURRENT_DATE - 12, 2), 
+(7, CURRENT_DATE - 11, 2),
+(8, CURRENT_DATE - 10, 2),
+(8, CURRENT_DATE - 9, 2),
+(9, CURRENT_DATE - 8, 2),
+(2, CURRENT_DATE - 7, 3),
+(10, CURRENT_DATE - 6, 1),
+(11, CURRENT_DATE - 5, 2),
+(1, CURRENT_DATE - 4, 1),
+(12, CURRENT_DATE - 3, 2),
+(1, CURRENT_DATE - 2, 2),
+(8, CURRENT_DATE - 1, 2);
+
 
