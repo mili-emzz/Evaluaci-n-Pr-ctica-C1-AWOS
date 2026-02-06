@@ -1,39 +1,25 @@
 import { z } from 'zod';
 
-export const createOrderSchema = z.object({
-  id_customer: z.number().int().min(1, "Cliente inválido"),
-  items: z.array(
-    z.object({
-      product_id: z.number().int().min(1),
-      qty: z.number().int().min(1),
-      price: z.number().positive(),
-    })
-  ).min(1, "Al menos 1 item requerido"),
-  status: z.number().int().min(1).max(3),
+export const salesDailySchema = z.object({
+  date_from: z.string().optional(),
+  date_to: z.string().optional(),
 });
 
-export const createPaymentSchema = z.object({
-  order_id: z.number().int().min(1),
-  method_id: z.number().int().min(1).max(3),
-  amount: z.number().positive("Monto debe ser positivo"),
+export const topProductsSchema = z.object({
+  search: z.string().optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
 });
 
-export const createProductSchema = z.object({
-  name: z.string().min(3, "Mínimo 3 caracteres").max(100),
-  category_id: z.number().int().min(1),
-  stock: z.number().int().min(0),
-  active: z.boolean().default(true),
+const VALID_CATEGORIES = [1, 2, 3, 4, 5, 6] as const;
+export const inventoryRiskSchema = z.object({
+  category_id: z.coerce.number().int().refine(
+    (val) => VALID_CATEGORIES.includes(val as typeof VALID_CATEGORIES[number]),
+    { message: 'Categoría inválida' }
+  ).optional(),
 });
 
-export const createCustomerSchema = z.object({
-  name: z.string().min(2, "Mínimo 2 caracteres").max(40),
-  email: z.string().email("Email inválido"),
+export const customerValueSchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
 });
-
-// TIPOS DERIVADOS DE SCHEMAS (para usar en funciones)
-
-export type CreateOrder = z.infer<typeof createOrderSchema>;
-export type CreatePayment = z.infer<typeof createPaymentSchema>;
-export type CreateProduct = z.infer<typeof createProductSchema>;
-export type CreateCustomer = z.infer<typeof createCustomerSchema>;
-
