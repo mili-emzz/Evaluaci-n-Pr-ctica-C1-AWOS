@@ -1,11 +1,9 @@
-version: '3.8'
-
 services:
-  postgres:
+  db:
     image: postgres:16-alpine
     container_name: evalc1_db
     environment:
-      POSTGRES_DB: evalc1
+      POSTGRES_DB: evalc1_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
@@ -21,7 +19,7 @@ services:
     container_name: nextjs_evalc1
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:3000
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/evalc1
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/evalc1_db
     ports:
       - "3000:3000"
     depends_on:
