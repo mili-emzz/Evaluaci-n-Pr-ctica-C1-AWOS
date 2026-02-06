@@ -50,3 +50,35 @@ LEFT JOIN category_stats cs ON p.category_id = cs.category_id
 WHERE p.active = true AND p.stock <= 20;
 
 -- vw_customer_value
+CREATE OR REPLACE VIEW vw_customer_value AS
+WITH customer_orders AS (
+  SELECT 
+    c.id AS customer_id,
+    c.name AS customer_name,
+    c.email AS customer_email,
+    COUNT(DISTINCT o.id) AS order_count,
+    SUM(p.amount) AS total_spent,
+    MAX(o.created_at) AS last_order_date
+  FROM customers c
+  INNER JOIN orders o ON c.id = o.id_customer
+  INNER JOIN payments p ON o.id = p.order_id
+  WHERE o.status = 2
+  GROUP BY c.id, c.name, c.email
+)
+SELECT 
+  customer_id,
+  customer_name,
+  customer_email,
+  order_count,
+  total_spent,
+  ROUND(total_spent::numeric / NULLIF(order_count, 0), 2) AS avg_order_value,
+  last_order_date,
+  CASE 
+    WHEN total_spent >= 1000 THEN 'preferido'
+    WHEN total_spent >= 500 THEN 'recurrente'
+    ELSE 'ocasional'
+  END AS segment,
+  CURRENT_DATE - last_order_date AS days_since_last_order
+FROM customer_orders
+WHERE total_spent > 0
+ORDER BY total_spent DESC;
