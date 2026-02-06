@@ -18,3 +18,6 @@ WHERE o.status = 2
 GROUP BY DATE(o.created_at)
 HAVING SUM(p.amount) > 0
 ORDER BY sale_date DESC;
+
+-- vw_inventory_risk
+

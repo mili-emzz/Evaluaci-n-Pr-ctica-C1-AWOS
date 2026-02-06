@@ -1,26 +1,26 @@
 CREATE TABLE "customers" (
-  "id" SERIAL PRIMARY KEY,
+  "id" SMALLSERIAL PRIMARY KEY,
   "name" varchar(40),
   "email" varchar(40)
 );
 
 CREATE TABLE "status" (
-  "id" SERIAL PRIMARY KEY,
+  "id" SMALLSERIAL PRIMARY KEY,
   "name" varchar(20)
 );
 
 CREATE TABLE "categories" (
-  "id" SERIAL PRIMARY KEY,
+  "id" SMALLSERIAL PRIMARY KEY,
   "name" varchar(20)
 );
 
 CREATE TABLE "p_methods" (
-  "id" SERIAL PRIMARY KEY,
+  "id" SMALLSERIAL PRIMARY KEY,
   "name" varchar(50)
 );
 
 CREATE TABLE "products" (
-  "id" SERIAL PRIMARY KEY,
+  "id" SMALLSERIAL PRIMARY KEY,
   "name" varchar(100),
   "category_id" int,
   "stock" int,
@@ -29,7 +29,7 @@ CREATE TABLE "products" (
 );
 
 CREATE TABLE "orders" (
-  "id" SERIAL PRIMARY KEY,
+  "id" SMALLSERIAL PRIMARY KEY,
   "id_customer" int,
   "created_at" timestamp DEFAULT CURRENT_TIMESTAMP,
   "status" int,
@@ -38,7 +38,7 @@ CREATE TABLE "orders" (
 );
 
 CREATE TABLE "order_items" (
-  "id" SERIAL PRIMARY KEY,
+  "id" SMALLSERIAL PRIMARY KEY,
   "order_id" int,
   "product_id" int,
   "qty" int,
@@ -48,7 +48,7 @@ CREATE TABLE "order_items" (
 );
 
 CREATE TABLE "payments" (
-  "id" SERIAL PRIMARY KEY,
+  "id" SMALLSERIAL PRIMARY KEY,
   "order_id" int,
   "method_id" int,
   "amount" int,
