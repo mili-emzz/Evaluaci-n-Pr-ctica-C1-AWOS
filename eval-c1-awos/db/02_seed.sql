@@ -44,12 +44,7 @@ INSERT INTO products (id, name, category_id, stock, active) VALUES
 (17, 'Albondigas', 6, 70, true),
 (18, 'Caldo de pollo', 6, 60, true);
 
-INSERT INTO orders (id_customer, created_at, status)
-SELECT 
-  (floor(random() * (SELECT COUNT(*) FROM customers)) + 1)::int AS id_customer,
-  CURRENT_DATE - (random() * 90)::int AS created_at,
-  CASE WHEN random() < 0.8 THEN 2 ELSE 1 END AS status
-FROM generate_series(1, 300);
+
 
 INSERT INTO order_items (order_id, product_id, qty, price)
 SELECT 
