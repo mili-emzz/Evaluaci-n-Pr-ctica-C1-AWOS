@@ -30,23 +30,6 @@ export async function query<T = any>(
   params?: any[]
 ): Promise<T[]> {
   const db = getDb();
-  try {
-    const result = await db.query(text, params);
-    return result.rows;
-  } catch (err: any) {
-    const message: string = err?.message ?? '';
-    if (message.includes('does not exist') && process.env.DATABASE_URL) {
-      // try fallback to 'postgres' database (useful when volume lost/init skipped)
-      const fallback = replaceDbInUrl(process.env.DATABASE_URL, 'postgres');
-      const fallbackPool = new Pool({ connectionString: fallback });
-      try {
-        const res = await fallbackPool.query(text, params);
-        await fallbackPool.end();
-        return res.rows;
-      } catch {
-        await fallbackPool.end();
-      }
-    }
-    throw err;
-  }
+  const result = await db.query(text, params);
+  return result.rows;
 }

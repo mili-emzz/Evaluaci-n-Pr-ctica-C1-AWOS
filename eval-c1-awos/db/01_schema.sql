@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
 CREATE TABLE "customers" (
   "id" SMALLSERIAL PRIMARY KEY,
   "name" varchar(40),
