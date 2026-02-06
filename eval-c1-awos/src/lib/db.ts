@@ -2,6 +2,17 @@ import { Pool } from 'pg';
 
 let pool: Pool | null = null;
 
+function replaceDbInUrl(url: string | undefined, dbName: string) {
+  if (!url) return url;
+  try {
+    const u = new URL(url);
+    u.pathname = `/${dbName}`;
+    return u.toString();
+  } catch {
+    return url.replace(/\/[^/]+$/, `/${dbName}`);
+  }
+}
+
 export function getDb() {
   if (!pool) {
     pool = new Pool({
@@ -19,6 +30,23 @@ export async function query<T = any>(
   params?: any[]
 ): Promise<T[]> {
   const db = getDb();
-  const result = await db.query(text, params);
-  return result.rows;
+  try {
+    const result = await db.query(text, params);
+    return result.rows;
+  } catch (err: any) {
+    const message: string = err?.message ?? '';
+    if (message.includes('does not exist') && process.env.DATABASE_URL) {
+      // try fallback to 'postgres' database (useful when volume lost/init skipped)
+      const fallback = replaceDbInUrl(process.env.DATABASE_URL, 'postgres');
+      const fallbackPool = new Pool({ connectionString: fallback });
+      try {
+        const res = await fallbackPool.query(text, params);
+        await fallbackPool.end();
+        return res.rows;
+      } catch {
+        await fallbackPool.end();
+      }
+    }
+    throw err;
+  }
 }

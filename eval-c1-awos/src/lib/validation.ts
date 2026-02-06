@@ -5,27 +5,47 @@ const singleDate = z.preprocess((val) => {
   return val;
 }, z.string().optional());
 
-export const salesDailySchema = z.object({
-  date_from: singleDate,
-  date_to: singleDate,
-});
+export const salesDailySchema = z
+  .object({
+    date_from: singleDate,
+    date_to: singleDate,
+  })
+  .strict();
 
-export const topProductsSchema = z.object({
-  search: z.string().optional(),
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(10),
-});
+export const topProductsSchema = z
+  .object({
+    search: z.string().optional(),
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(10),
+  })
+  .strict();
 
 const VALID_CATEGORIES = [1, 2, 3, 4, 5, 6] as const;
-export const inventoryRiskSchema = z.object({
-  category_id: z.coerce.number().int().refine(
-    (val) => VALID_CATEGORIES.includes(val as typeof VALID_CATEGORIES[number]),
-    { message: 'Categoría inválida' }
-  ).optional(),
-});
+export const inventoryRiskSchema = z
+  .object({
+    category_id: z
+      .preprocess((v) => {
+        if (Array.isArray(v)) return v[0];
+        return v;
+      }, z.coerce.number().int().optional())
+      .refine(
+        (val) => val === undefined || VALID_CATEGORIES.includes(val as typeof VALID_CATEGORIES[number]),
+        { message: 'Categoría inválida' }
+      ),
+  })
+  .strict();
 
-// Paginación para vw_customer_value
-export const customerValueSchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(10),
-});
+export const customerValueSchema = z
+  .object({
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(10),
+  })
+  .strict();
+
+export const paymentMixSchema = z.object({}).strict();
+
+export type SalesDailyQuery = z.infer<typeof salesDailySchema>;
+export type TopProductsQuery = z.infer<typeof topProductsSchema>;
+export type InventoryRiskQuery = z.infer<typeof inventoryRiskSchema>;
+export type CustomerValueQuery = z.infer<typeof customerValueSchema>;
+export type PaymentMixQuery = z.infer<typeof paymentMixSchema>;
