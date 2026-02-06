@@ -11,10 +11,10 @@ export default async function Page({ searchParams }: { searchParams: any }) {
   const params: any[] = [];
   let sql = 'SELECT * FROM vw_sales_daily';
   if (dateFrom && dateTo) {
-    sql += ' WHERE sale_date BETWEEN $1 AND $2 ORDER BY sale_date DESC LIMIT 100';
+    sql += ' WHERE sale_date BETWEEN $1 AND $2 ORDER BY sale_date DESC LIMIT 50';
     params.push(dateFrom, dateTo);
   } else {
-    sql += ' ORDER BY sale_date DESC LIMIT 50';
+    sql += ' ORDER BY sale_date DESC LIMIT 20';
   }
 
   const rows: SalesDaily[] = await query(sql, params);
@@ -33,9 +33,8 @@ export default async function Page({ searchParams }: { searchParams: any }) {
         </thead>
         <tbody>
           {rows.map((r) => (
-            <tr key={r.sale_date}>
-              <td>{r.sale_date}</td>
-              <td>{r.total_tickets}</td>
+            <tr key={r.sale_date.toString()}>
+              <td>{new Date(r.sale_date).toISOString().split('T')[0]}</td>              <td>{r.total_tickets}</td>
               <td>{r.total_sales}</td>
               <td>{r.avg_ticket}</td>
             </tr>

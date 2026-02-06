@@ -96,8 +96,8 @@ SELECT
   ROUND(total_spent::numeric / NULLIF(order_count, 0), 2) AS avg_order_value,
   last_order_date,
   CASE 
-    WHEN total_spent >= 1000 THEN 'preferido'
-    WHEN total_spent >= 500 THEN 'recurrente'
+    WHEN total_spent >= 10000 THEN 'preferido'
+    WHEN total_spent >= 5000 THEN 'recurrente'
     ELSE 'ocasional'
   END AS segment,
   CURRENT_DATE - last_order_date AS days_since_last_order
