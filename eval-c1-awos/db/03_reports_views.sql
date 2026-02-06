@@ -110,3 +110,36 @@ CREATE OR REPLACE VIEW vw_top_products_ranked AS
     rank() OVER (ORDER BY units_sold DESC) AS units_rank,
     round(total_revenue::numeric / NULLIF(units_sold, 0)::numeric, 2) AS avg_price_per_unit
    FROM product_sales;
+
+--vw_customer_value
+CREATE OR REPLACE VIEW vw_customer_value AS
+ WITH customer_orders AS (
+         SELECT c.id AS customer_id,
+            c.name AS customer_name,
+            c.email AS customer_email,
+            count(DISTINCT o.id) AS order_count,
+            sum(p.amount) AS total_spent,
+            max(o.created_at) AS last_order_date
+           FROM customers c
+             JOIN orders o ON c.id = o.id_customer
+             JOIN payments p ON o.id = p.order_id
+          WHERE o.status = 2
+          GROUP BY c.id, c.name, c.email
+        )
+ SELECT customer_id,
+    customer_name,
+    customer_email,
+    order_count,
+    total_spent,
+    round(total_spent::numeric / NULLIF(order_count, 0)::numeric, 2) AS avg_order_value,
+    last_order_date,
+        CASE
+            WHEN total_spent >= 1000 THEN 'preferido'::text
+            WHEN total_spent >= 500 THEN 'recurrente'::text
+            ELSE 'ocasional'::text
+        END AS segment,
+    CURRENT_DATE - last_order_date AS days_since_last_order
+   FROM customer_orders
+  WHERE total_spent > 0
+  ORDER BY total_spent DESC;
+
