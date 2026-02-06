@@ -82,3 +82,31 @@ SELECT
 FROM customer_orders
 WHERE total_spent > 0
 ORDER BY total_spent DESC;
+
+
+-- vw_top_products_ranked
+
+CREATE OR REPLACE VIEW vw_top_products_ranked AS
+ WITH product_sales AS (
+         SELECT p.id AS product_id,
+            p.name AS product_name,
+            c.name AS category_name,
+            sum(oi.qty * oi.price) AS total_revenue,
+            sum(oi.qty) AS units_sold,
+            count(DISTINCT oi.order_id) AS orders_count
+           FROM products p
+             JOIN order_items oi ON p.id = oi.product_id
+             JOIN categories c ON p.category_id = c.id
+          GROUP BY p.id, p.name, c.name
+         HAVING sum(oi.qty) > 0
+        )
+ SELECT product_id,
+    product_name,
+    category_name,
+    total_revenue,
+    units_sold,
+    orders_count,
+    rank() OVER (ORDER BY total_revenue DESC) AS revenue_rank,
+    rank() OVER (ORDER BY units_sold DESC) AS units_rank,
+    round(total_revenue::numeric / NULLIF(units_sold, 0)::numeric, 2) AS avg_price_per_unit
+   FROM product_sales;
