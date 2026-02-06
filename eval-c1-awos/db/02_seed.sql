@@ -105,4 +105,33 @@ INSERT INTO orders (id_customer, created_at, status) VALUES
 (1, CURRENT_DATE - 2, 2),
 (8, CURRENT_DATE - 1, 2);
 
+INSERT INTO order_items (order_id, product_id, qty, price)
+SELECT
+  o.id,
+  ((o.rownum % (SELECT COUNT(*) FROM products)) + 1) AS product_id,
+  ((o.rownum % 5) + 1) AS qty,
+  CASE (o.rownum % 4)
+    WHEN 0 THEN 180
+    WHEN 1 THEN 320
+    WHEN 2 THEN 450
+    ELSE 600
+  END AS price
+FROM (
+  SELECT id, row_number() OVER (ORDER BY id) - 1 AS rownum
+  FROM orders
+  ORDER BY id
+  LIMIT 60
+) o;
+
+INSERT INTO payments (order_id, method_id, amount)
+SELECT
+  o.id,
+  ((o.id % (SELECT COUNT(*) FROM p_methods)) + 1) AS method_id,
+  COALESCE((SELECT SUM(qty * price) FROM order_items WHERE order_id = o.id),
+           ((o.id % 5) + 1) * 300) AS amount
+FROM orders o
+WHERE o.status = 2
+ORDER BY random()
+LIMIT 60;
+
 
