@@ -1,8 +1,13 @@
 import { z } from 'zod';
 
+const singleDate = z.preprocess((val) => {
+  if (Array.isArray(val)) return val[0];
+  return val;
+}, z.string().optional());
+
 export const salesDailySchema = z.object({
-  date_from: z.string().optional(),
-  date_to: z.string().optional(),
+  date_from: singleDate,
+  date_to: singleDate,
 });
 
 export const topProductsSchema = z.object({
@@ -19,6 +24,7 @@ export const inventoryRiskSchema = z.object({
   ).optional(),
 });
 
+// Paginación para vw_customer_value
 export const customerValueSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(10),

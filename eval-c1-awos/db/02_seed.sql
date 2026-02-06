@@ -63,7 +63,7 @@ INSERT INTO orders (id_customer, created_at, status) VALUES
 (3, CURRENT_DATE - 44, 2),
 (12, CURRENT_DATE - 43, 2),
 (8, CURRENT_DATE - 42, 2), 
-(2, CURRENT_DATE - 41, 2); 
+(2, CURRENT_DATE - 41, 2), 
 (4,  CURRENT_DATE - 40, 2),
 (1, CURRENT_DATE - 39, 2), -- Alicia
 (5, CURRENT_DATE - 38, 1),
@@ -83,7 +83,7 @@ INSERT INTO orders (id_customer, created_at, status) VALUES
 (1, CURRENT_DATE - 24, 1), -- Alicia
 (6, CURRENT_DATE - 23, 2),
 (5, CURRENT_DATE - 22, 2),
-(8, CURRENT_DATE - 21, 2); -- Viviana
+(8, CURRENT_DATE - 21, 2), -- Viviana
 (4, CURRENT_DATE - 20, 2),
 (1, CURRENT_DATE - 19, 2), 
 (4, CURRENT_DATE - 18, 2),
