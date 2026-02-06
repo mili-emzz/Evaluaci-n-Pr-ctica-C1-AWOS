@@ -143,3 +143,35 @@ CREATE OR REPLACE VIEW vw_customer_value AS
   WHERE total_spent > 0
   ORDER BY total_spent DESC;
 
+--vw_payment_mix
+
+CREATE OR REPLACE VIEW vw_payment_mix AS
+WITH payment_totals AS (
+  SELECT 
+    pm.id AS method_id,
+    pm.name AS method_name,
+    COUNT(p.id) AS transaction_count,
+    COALESCE(SUM(p.amount), 0) AS total_amount
+  FROM p_methods pm
+  LEFT JOIN payments p ON pm.id = p.method_id
+  GROUP BY pm.id, pm.name
+),
+grand_total AS (
+  SELECT SUM(total_amount) AS overall_total
+  FROM payment_totals
+)
+SELECT 
+  pt.method_id,
+  pt.method_name,
+  pt.transaction_count,
+  pt.total_amount,
+  ROUND((pt.total_amount::numeric / NULLIF(gt.overall_total, 0)) * 100, 2) AS percentage,
+  CASE 
+    WHEN pt.total_amount = 0 THEN 'unused'
+    WHEN (pt.total_amount::numeric / NULLIF(gt.overall_total, 0)) * 100 > 40 THEN 'dominant'
+    WHEN (pt.total_amount::numeric / NULLIF(gt.overall_total, 0)) * 100 > 20 THEN 'significant'
+    ELSE 'minor'
+  END AS usage_category
+FROM payment_totals pt
+CROSS JOIN grand_total gt
+ORDER BY pt.total_amount DESC;
