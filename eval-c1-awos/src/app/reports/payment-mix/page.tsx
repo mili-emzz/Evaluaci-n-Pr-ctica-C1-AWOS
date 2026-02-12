@@ -1,11 +1,7 @@
-import { query } from '../../../lib/db';
-import { paymentMixSchema } from '../../../lib/validation';
-import { PaymentMix } from '../../../lib/vw_types';
+import getPayments from '@/app/api/components/payments/data';
 
 export default async function Page({ searchParams }: { searchParams: any }) {
-  const paramsObj = await Promise.resolve(searchParams || {});
-  paymentMixSchema.parse(paramsObj);
-  const rows: PaymentMix[] = await query('SELECT * FROM vw_payment_mix ORDER BY total_amount DESC');
+  const {rows} = await getPayments(searchParams);
   const main = rows[0];
 
   return (

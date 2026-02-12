@@ -1,21 +1,8 @@
-import { query } from '../../../lib/db';
-import { inventoryRiskSchema } from '../../../lib/validation';
-import { InventoryRisk } from '../../../lib/vw_types';
+import getInventory from '@/app/api/components/inventory/data';
 
 export default async function Page({ searchParams }: { searchParams: any }) {
-  const paramsObj = await Promise.resolve(searchParams || {});
-  const p = inventoryRiskSchema.safeParse(paramsObj);
-  const category_id = p.success ? p.data.category_id : undefined;
 
-  const params: any[] = [];
-  let sql = 'SELECT * FROM vw_inventory_risk';
-  if (category_id !== undefined) {
-    params.push(category_id);
-    sql += ` WHERE category_id = $1`;
-  }
-  sql += ' ORDER BY stock_percentage ASC LIMIT 100';
-
-  const rows: InventoryRisk[] = await query(sql, params);
+  const {rows} = await getInventory(searchParams);
   const countAtRisk = rows.length;
 
   return (

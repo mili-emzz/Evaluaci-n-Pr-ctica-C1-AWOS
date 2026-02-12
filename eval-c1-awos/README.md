@@ -6,8 +6,47 @@ Proyecto para evaluación de la unidad 1 de awos.
 ## Escenario
 Eres responsable de analitica en una cafeteria del campus. No necesitan un punto de venta completo, sino un dashboard de reportes para entender ventas, productos estrella, inventario en riesgo, clientes frecuentes y mezcla de pagos. Tu app debe permitir consultar estos insights con filtros y paginación.
 
-## 🔐 Verificación de Seguridad
+## Como levantar el proyecto
 
+### Opcion 1: Con Docker (recomendado)
+
+**Requisitos:**
+- Docker y Docker Compose instalados
+
+**Pasos:**
+
+1. **Clonar el repositorio:**
+```bash
+git clone https://github.com/mili-emzz/Evaluaci-n-Pr-ctica-C1-AWOS.git
+cd eval-c1-awos
+```
+
+2. **Crear el archivo .env con las credenciales:**
+
+Copia el archivo de ejemplo:
+```bash
+DATABASE_URL=postgresql://postgres:postgres@localhost:5433/evalc1_db
+
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
+
+3. **Levantar los contenedores:**
+```bash
+docker-compose up --build
+```
+
+4. **Acceder a la aplicacion:**
+
+Espera unos segundos hasta que los contenedores esten listos (veras el mensaje "Ready" en la consola). Despues abre tu navegador en:
+
+**http://localhost:3000**
+
+Para detener el proyecto: presiona `Ctrl+C` en la terminal, o ejecuta:
+```bash
+docker-compose down
+```
+
+## 🔐 Verificación de Seguridad
 ### Verificación Manual
 ```bash
 # 1. Conectarse como app_user

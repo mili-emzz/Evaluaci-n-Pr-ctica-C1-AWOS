@@ -1,14 +1,7 @@
-import { query } from '../../../lib/db';
-import { customerValueSchema } from '../../../lib/validation';
-import { CustomerValue } from '../../../lib/vw_types';
+import getCustomer from '@/app/api/components/customer/data';
 
 export default async function Page({ searchParams }: { searchParams: any }) {
-  const paramsObj = await Promise.resolve(searchParams || {});
-  const { page, limit } = customerValueSchema.parse(paramsObj);
-  const offset = (page - 1) * limit;
-
-  const sql = 'SELECT * FROM vw_customer_value ORDER BY total_spent DESC LIMIT $1 OFFSET $2';
-  const rows: CustomerValue[] = await query(sql, [limit, offset]);
+  const {rows, page} = await getCustomer(searchParams);
   const topCustomer = rows[0];
 
   return (

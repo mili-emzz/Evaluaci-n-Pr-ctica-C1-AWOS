@@ -1,23 +1,8 @@
-import { query } from '../../../lib/db';
-import { topProductsSchema } from '../../../lib/validation';
-import { TopProduct } from '../../../lib/vw_types';
+import getProducts from '@/app/api/components/products/data';
 
 export default async function Page({ searchParams }: { searchParams: any }) {
-  const paramsObj = await Promise.resolve(searchParams || {});
-  const parsed = topProductsSchema.parse(paramsObj);
-  const { search, page, limit } = parsed;
-  const offset = (page - 1) * limit;
 
-  const params: any[] = [];
-  let sql = 'SELECT * FROM vw_top_products_ranked';
-  if (search) {
-    params.push(`%${search}%`);
-    sql += ` WHERE product_name ILIKE $${params.length}`;
-  }
-  params.push(limit, offset);
-  sql += ` ORDER BY total_revenue DESC LIMIT $${params.length - 1} OFFSET $${params.length}`;
-
-  const rows: TopProduct[] = await query(sql, params);
+  const {rows} = await getProducts(searchParams)
   const totalRevenue = rows.reduce((s, r) => s + Number(r.total_revenue || 0), 0);
 
   return (
