@@ -1,12 +1,19 @@
-import getSales from "@/app/api/components/sales/data";
+import { api } from '@/lib/api-client';
+import { SalesDaily } from '@/lib/vw_types';
+import Link from 'next/link';
 
-export default async function Page({ searchParams }: { searchParams: any }) {
+export default async function SalesPage({ searchParams }: { searchParams: { date_from?: string, date_to?: string } }) {
 
-  const {rows} = await getSales(searchParams)
+  const {rows} = await api.salesDaily(searchParams)
   const kpi = rows.reduce((s, r) => s + Number(r.total_sales || 0), 0);
 
   return (
     <div style={{ padding: 24 }}>
+
+      <Link href="/">
+        <button style={{ margin: '8px 0' }}>Volver a Reportes</button>
+      </Link>
+
       <h2>Ventas Diarias</h2>
       <p>Insight: ventas agregadas por día.</p>
       <div style={{ margin: '8px 0' }}>KPI — Total ventas: {kpi}</div>

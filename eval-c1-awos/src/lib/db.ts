@@ -2,17 +2,6 @@ import { Pool } from 'pg';
 
 let pool: Pool | null = null;
 
-function replaceDbInUrl(url: string | undefined, dbName: string) {
-  if (!url) return url;
-  try {
-    const u = new URL(url);
-    u.pathname = `/${dbName}`;
-    return u.toString();
-  } catch {
-    return url.replace(/\/[^/]+$/, `/${dbName}`);
-  }
-}
-
 export function getDb() {
   if (!pool) {
     pool = new Pool({

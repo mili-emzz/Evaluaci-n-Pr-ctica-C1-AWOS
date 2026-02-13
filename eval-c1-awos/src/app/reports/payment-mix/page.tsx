@@ -1,11 +1,16 @@
-import getPayments from '@/app/api/components/payments/data';
+import { api } from '@/lib/api-client';
+import { PaymentMix } from '@/lib/vw_types';
+import Link from 'next/link';
 
-export default async function Page({ searchParams }: { searchParams: any }) {
-  const {rows} = await getPayments(searchParams);
+export default async function PaxmentPage() {
+  const { rows } = await api.paymentMix();
   const main = rows[0];
 
   return (
     <div style={{ padding: 24 }}>
+      <Link href="/">
+        <button style={{ margin: '8px 0' }}>Volver a Reportes</button>
+      </Link>
       <h2>Mix de Pagos</h2>
       <p>Insight: distribución de métodos de pago.</p>
       <div style={{ margin: '8px 0' }}>KPI — Método líder: {main?.method_name ?? '—'}</div>

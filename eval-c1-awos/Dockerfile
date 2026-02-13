@@ -1,4 +1,3 @@
-# Dockerfile
 FROM node:20-alpine 
 
 WORKDIR /app
@@ -6,8 +5,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
 
+COPY src/lib ./src/lib
 COPY . .
-
 EXPOSE 3000
 
 CMD ["npm", "run", "dev"]

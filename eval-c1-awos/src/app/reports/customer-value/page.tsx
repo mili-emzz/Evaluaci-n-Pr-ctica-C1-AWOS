@@ -1,11 +1,18 @@
-import getCustomer from '@/app/api/components/customer/data';
+import { api } from '@/lib/api-client';
+import { CustomerValue } from '@/lib/vw_types';
+import Link from 'next/link';
 
-export default async function Page({ searchParams }: { searchParams: any }) {
-  const {rows, page} = await getCustomer(searchParams);
-  const topCustomer = rows[0];
+export default async function CustomerPage({ searchParams }: { searchParams: { page?: number; limit?: number } }) {
+  const page = searchParams.page || 1;
+  const limit = searchParams.limit || 10;
+  const { rows } = await api.customerValue({ page, limit });
+  const topCustomer = rows.reduce((sum, r: CustomerValue) => sum + Number(r.total_spent || 0), 0)
 
   return (
     <div style={{ padding: 24 }}>
+      <Link href="/">
+        <button style={{ margin: '8px 0' }}>Volver a Reportes</button>
+      </Link>
       <h2>Valor de Clientes</h2>
       <p>Insight: clientes ordenados por gasto total.</p>
       <div style={{ margin: '8px 0' }}>KPI — Top cliente: {topCustomer?.customer_name ?? '—'}</div>
@@ -26,6 +33,27 @@ export default async function Page({ searchParams }: { searchParams: any }) {
           ))}
         </tbody>
       </table>
+      <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+        {page > 1 && (
+          <Link
+            href={`page=${page - 1}&limit=${limit}`}
+            style={{ padding: '0.5rem 1rem', border: '1px solid #ddd', textDecoration: 'none', borderRadius: '4px' }}
+          >
+            ← Anterior
+          </Link>
+        )}
+        <span style={{ padding: '0.5rem 1rem', backgroundColor: '#1976d2', color: 'white', borderRadius: '4px' }}>
+          Página {page}
+        </span>
+
+        <Link
+          href={`page=${page + 1}&limit=${limit}`}
+          style={{ padding: '0.5rem 1rem', border: '1px solid #ddd', textDecoration: 'none', borderRadius: '4px' }}
+        >
+          Siguiente →
+        </Link>
+      </div>
     </div>
   );
 }
+

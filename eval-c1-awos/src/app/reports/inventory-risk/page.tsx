@@ -1,12 +1,23 @@
-import getInventory from '@/app/api/components/inventory/data';
+import { api } from '@/lib/api-client';
+import { InventoryRisk } from '@/lib/vw_types';
+import Link from 'next/link';
 
-export default async function Page({ searchParams }: { searchParams: any }) {
-
-  const {rows} = await getInventory(searchParams);
-  const countAtRisk = rows.length;
+export default async function InventoryRiskPage({
+  searchParams,
+}: {
+  searchParams: { category_id?: string };
+}) {
+  const categoryId = searchParams.category_id ? parseInt(searchParams.category_id) : undefined;
+  const { rows } = await api.inventoryRisk({ category_id: categoryId });
+  const countAtRisk = rows.filter(
+    (r: InventoryRisk) => r.risk_level === 'critico' || r.risk_level === 'sin_stock'
+  ).length;
 
   return (
     <div style={{ padding: 24 }}>
+      <Link href="/">
+        <button style={{ margin: '8px 0' }}>Volver a Reportes</button>
+      </Link>
       <h2>Inventario en Riesgo</h2>
       <p>Insight: productos con stock bajo por categoría.</p>
       <div style={{ margin: '8px 0' }}>KPI — Productos en riesgo: {countAtRisk}</div>

@@ -17,8 +17,7 @@ export const topProductsSchema = z
     search: z.string().optional(),
     page: z.coerce.number().int().min(1).default(1),
     limit: z.coerce.number().int().min(1).max(100).default(10),
-  })
-  .strict();
+  });
 
 const VALID_CATEGORIES = [1, 2, 3, 4, 5, 6] as const;
 export const inventoryRiskSchema = z
@@ -39,8 +38,7 @@ export const customerValueSchema = z
   .object({
     page: z.coerce.number().int().min(1).default(1),
     limit: z.coerce.number().int().min(1).max(100).default(10),
-  })
-  .strict();
+  });
 
 export const paymentMixSchema = z.object({}).strict();
 
