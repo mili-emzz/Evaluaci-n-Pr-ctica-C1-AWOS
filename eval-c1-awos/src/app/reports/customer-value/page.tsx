@@ -2,11 +2,14 @@ import { api } from '@/lib/api-client';
 import { CustomerValue } from '@/lib/vw_types';
 import Link from 'next/link';
 
-export default async function CustomerPage({ searchParams }: { searchParams: { page?: number; limit?: number } }) {
-  const page = searchParams.page || 1;
-  const limit = searchParams.limit || 10;
+export default async function CustomerPage(
+  { searchParams }: { searchParams: Promise<{ page?: string; limit?: string }> }
+) {
+  const params = await searchParams;
+  const page = Number(params.page) || 1;
+  const limit = Number(params.limit) || 10;
   const { rows } = await api.customerValue({ page, limit });
-  const topCustomer = rows.reduce((sum, r: CustomerValue) => sum + Number(r.total_spent || 0), 0)
+  const topCustomer = rows[0];
 
   return (
     <div style={{ padding: 24 }}>

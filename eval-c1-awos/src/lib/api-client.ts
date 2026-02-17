@@ -1,11 +1,11 @@
-const API_BASE = '';
+const API_BASE = process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
 
 export async function fetchAPI<T>(
   endpoint: string,
   params?: Record<string, any>
 ): Promise<T> {
-  const url = new URL(`${API_BASE}/api${endpoint}`);
-  
+  const url = new URL(`/api${endpoint}`, API_BASE);
+
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
@@ -15,12 +15,13 @@ export async function fetchAPI<T>(
   }
 
   const response = await fetch(url.toString(), {
-    cache: 'no-store', 
+    cache: 'no-store',
   });
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ error: 'Unknown error' }));
-    throw new Error(error.error || `HTTP ${response.status}`);
+    const text = await response.text();
+    console.error("API ERROR:", text);
+    throw new Error(text || `HTTP ${response.status}`);
   }
 
   return response.json();
