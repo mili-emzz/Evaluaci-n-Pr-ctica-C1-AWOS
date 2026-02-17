@@ -16,19 +16,21 @@ export default async function TopProductsPage({ searchParams }: { searchParams: 
         <button style={{ margin: '8px 0' }}>Volver a Reportes</button>
       </Link>
       <h2>Productos Top</h2>
+
       <form method="get" style={{ marginBottom: '1rem', display: 'flex', gap: '0.5rem' }}>
         <input
           type="text"
           name="search"
           placeholder="Buscar producto"
           defaultValue={search}
-          style={{ padding: '0.5rem', flex: 1, border: '1px solid #ddd', borderRadius: '4px' }}
+          style={{ padding: '0.5rem', flex: 1, border: '1px solid #000', borderRadius: '4px' }}
         />
         <input type="hidden" name="page" value="1" />
-        <button type="submit" style={{ padding: '0.5rem 1rem', backgroundColor: '#1976d2', color: 'white', border: 'none', borderRadius: '4px' }}>
+        <button type="submit" style={{ padding: '0.5rem 1rem', backgroundColor: '#fff', color: 'white', border: 'none', borderRadius: '4px' }}>
           Buscar
         </button>
       </form>
+
       <p>Insight: productos con mayor revenue.</p>
       <div style={{ margin: '8px 0' }}>KPI — Revenue en página: {totalRevenue}</div>
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>

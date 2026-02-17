@@ -36,7 +36,7 @@ export default async function CustomerPage({ searchParams }: { searchParams: { p
       <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
         {page > 1 && (
           <Link
-            href={`page=${page - 1}&limit=${limit}`}
+            href={`?page=${page - 1}&limit=${limit}`}
             style={{ padding: '0.5rem 1rem', border: '1px solid #ddd', textDecoration: 'none', borderRadius: '4px' }}
           >
             ← Anterior
@@ -47,7 +47,7 @@ export default async function CustomerPage({ searchParams }: { searchParams: { p
         </span>
 
         <Link
-          href={`page=${page + 1}&limit=${limit}`}
+          href={`?page=${page + 1}&limit=${limit}`}
           style={{ padding: '0.5rem 1rem', border: '1px solid #ddd', textDecoration: 'none', borderRadius: '4px' }}
         >
           Siguiente →

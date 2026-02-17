@@ -21,13 +21,9 @@ export async function GET(request: NextRequest) {
 
         const { page, limit } = parsed.data;
         const offset = (page - 1) * limit;
-        const params: any[] = [];
 
-        let sql = 'SELECT * FROM vw_customer_value ORDER BY total_spent DESC LIMIT $1 OFFSET $2';
+        const sql = 'SELECT * FROM vw_customer_value ORDER BY total_spent DESC LIMIT $1 OFFSET $2';
         const rows: CustomerValue[] = await query(sql, [limit, offset]);
-
-        params.push(limit, offset);
-        sql += ` ORDER BY total_spent DESC LIMIT $${params.length - 1} OFFSET $${params.length}`;
 
         return NextResponse.json({ rows, page, limit });
 
