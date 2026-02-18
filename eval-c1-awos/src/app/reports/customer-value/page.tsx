@@ -3,8 +3,7 @@ import { CustomerValue } from '@/lib/vw_types';
 import Link from 'next/link';
 
 export default async function CustomerPage(
-  { searchParams }: { searchParams: Promise<{ page?: string; limit?: string }> }
-) {
+  { searchParams }: { searchParams: Promise<{ page?: string; limit?: string }> }) {
   const params = await searchParams;
   const page = Number(params.page) || 1;
   const limit = Number(params.limit) || 10;

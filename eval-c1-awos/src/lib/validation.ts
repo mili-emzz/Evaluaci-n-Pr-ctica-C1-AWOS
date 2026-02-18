@@ -19,20 +19,16 @@ export const topProductsSchema = z
     limit: z.coerce.number().int().min(1).max(100).default(10),
   });
 
-const VALID_CATEGORIES = [1, 2, 3, 4, 5, 6] as const;
 export const inventoryRiskSchema = z
   .object({
     category_id: z
       .preprocess((v) => {
         if (Array.isArray(v)) return v[0];
         return v;
-      }, z.coerce.number().int().optional())
-      .refine(
-        (val) => val === undefined || VALID_CATEGORIES.includes(val as typeof VALID_CATEGORIES[number]),
-        { message: 'Categoría inválida' }
-      ),
+      }, z.coerce.number().int().optional()),
   })
   .strict();
+
 
 export const customerValueSchema = z
   .object({

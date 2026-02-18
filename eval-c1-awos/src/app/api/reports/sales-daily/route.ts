@@ -3,7 +3,7 @@ import { query } from "../../../../lib/db";
 import { salesDailySchema } from "../../../../lib/validation";
 import { SalesDaily } from "@/lib/vw_types";
 
-export default async function GET(request: NextRequest) {
+export async function GET(request: NextRequest) {
 
     try {
         const searchParams = request.nextUrl.searchParams;

@@ -1,4 +1,4 @@
-const API_BASE = process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
+const API_BASE = process.env.NEXT_PUBLIC_BASE_URL;
 
 export async function fetchAPI<T>(
   endpoint: string,
@@ -14,9 +14,7 @@ export async function fetchAPI<T>(
     });
   }
 
-  const response = await fetch(url.toString(), {
-    cache: 'no-store',
-  });
+  const response = await fetch(url.toString());
 
   if (!response.ok) {
     const text = await response.text();

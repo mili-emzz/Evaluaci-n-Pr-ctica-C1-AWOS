@@ -1,5 +1,4 @@
 import { api } from '@/lib/api-client';
-import { PaymentMix } from '@/lib/vw_types';
 import Link from 'next/link';
 
 export default async function PaxmentPage() {

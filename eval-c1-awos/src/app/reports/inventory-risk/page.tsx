@@ -5,9 +5,14 @@ import Link from 'next/link';
 export default async function InventoryRiskPage({
   searchParams,
 }: {
-  searchParams: { category_id?: string };
+  searchParams: Promise<{ category_id?: string }>;
 }) {
-  const categoryId = searchParams.category_id ? parseInt(searchParams.category_id) : undefined;
+
+  const params = await searchParams;
+  const categoryId =
+    params.category_id && !isNaN(Number(params.category_id))
+      ? Number(params.category_id)
+      : undefined;
   const { rows } = await api.inventoryRisk({ category_id: categoryId });
   const countAtRisk = rows.filter(
     (r: InventoryRisk) => r.risk_level === 'critico' || r.risk_level === 'sin_stock'

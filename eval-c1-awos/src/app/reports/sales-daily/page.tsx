@@ -2,10 +2,21 @@ import { api } from '@/lib/api-client';
 import { SalesDaily } from '@/lib/vw_types';
 import Link from 'next/link';
 
-export default async function SalesPage({ searchParams }: { searchParams: { date_from?: string, date_to?: string } }) {
+export default async function SalesPage({ searchParams }: { searchParams: Promise<{ date_from?: string, date_to?: string }> }) {
 
-  const {rows} = await api.salesDaily(searchParams)
+  const params = await searchParams
+  const { rows } = await api.salesDaily(params)
   const kpi = rows.reduce((s, r) => s + Number(r.total_sales || 0), 0);
+  const from =
+    params.date_from && params.date_from !== ''
+      ? params.date_from
+      : undefined;
+
+  const to =
+    params.date_to && params.date_to !== ''
+      ? params.date_to
+      : undefined;
+
 
   return (
     <div style={{ padding: 24 }}>

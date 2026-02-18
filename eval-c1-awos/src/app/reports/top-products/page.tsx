@@ -1,11 +1,12 @@
 import { api } from '@/lib/api-client';
 import Link from 'next/link';
 
-export default async function TopProductsPage({ searchParams }: { searchParams: { search?: string, page?: number, limit?: number } }) {
+export default async function TopProductsPage({ searchParams }: { searchParams: Promise<{ search?: string, page?: number, limit?: number }> }) {
 
-  const search = searchParams.search || '';
-  const page = searchParams.page || 1;
-  const limit = searchParams.limit || 10;
+  const params = await searchParams;
+  const search = params.search || '';
+  const page = params.page || 1;
+  const limit = params.limit || 10;
   
   const { rows } = await api.topProducts({ search, page, limit });
   const totalRevenue = rows.reduce((s, r) => s + Number(r.total_revenue || 0), 0);
