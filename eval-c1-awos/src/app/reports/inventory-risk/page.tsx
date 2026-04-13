@@ -15,7 +15,7 @@ export default async function InventoryRiskPage({
       : undefined;
   const { rows } = await api.inventoryRisk({ category_id: categoryId });
   const countAtRisk = rows.filter(
-    (r: InventoryRisk) => r.risk_level === 'critico' || r.risk_level === 'sin_stock'
+    (r: InventoryRisk) => r.risk_level === 'critico' || r.risk_level === 'sin_stock' || r.risk_level === 'advertencia'
   ).length;
 
   return (

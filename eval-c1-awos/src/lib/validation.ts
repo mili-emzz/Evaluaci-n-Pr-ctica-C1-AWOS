@@ -26,6 +26,7 @@ export const inventoryRiskSchema = z
     category_id: z
       .preprocess((v) => {
         if (Array.isArray(v)) return v[0];
+        if (v === null || v === undefined || v === '') return undefined;
         return v;
       }, z.coerce.number().int().optional()),
   })

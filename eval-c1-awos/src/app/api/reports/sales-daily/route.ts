@@ -22,19 +22,19 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const { page, limit } = parsed.data;
+        const { page = 1, limit = 10 } = parsed.data || {};
         const offset = (page - 1) * limit;
         const params: any[] = [];
         let sql = 'SELECT * FROM vw_sales_daily';
 
         if (parsed.data.date_from && parsed.data.date_to) {
-            sql += ' WHERE sale_date BETWEEN $1 AND $2 ORDER BY sale_date DESC LIMIT 50';
-            params.push(parsed.data.date_from, parsed.data.date_to);
+            sql += ' WHERE sale_date BETWEEN $1 AND $2 ORDER BY sale_date DESC LIMIT $3 OFFSET $4';
+            params.push(parsed.data.date_from, parsed.data.date_to, limit, offset);
         } else {
-            sql += ' ORDER BY sale_date DESC LIMIT 20';
+            sql += ' ORDER BY sale_date DESC LIMIT $1 OFFSET $2';
+            params.push(limit, offset);
         }
 
-        params.push(limit, offset);
         const rows: SalesDaily[] = await query(sql, params);
 
         return NextResponse.json({ rows });
