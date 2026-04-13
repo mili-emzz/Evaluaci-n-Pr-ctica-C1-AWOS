@@ -19,11 +19,20 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const { page, limit } = parsed.data;
+        const { search, page, limit } = parsed.data;
         const offset = (page - 1) * limit;
+        const params: any[] = [];
+        let sql = 'SELECT * FROM vw_customer_value';
 
-        const sql = 'SELECT * FROM vw_customer_value ORDER BY total_spent DESC LIMIT $1 OFFSET $2';
-        const rows: CustomerValue[] = await query(sql, [limit, offset]);
+        if (search) {
+            sql += ' WHERE customer_name ILIKE $1 OR customer_email ILIKE $1';
+            params.push(`%${search}%`);
+        }
+
+        sql += ` ORDER BY total_spent DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+        params.push(limit, offset);
+
+        const rows: CustomerValue[] = await query(sql, params);
 
         return NextResponse.json({ rows, page, limit });
 

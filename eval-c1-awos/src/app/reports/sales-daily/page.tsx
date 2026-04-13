@@ -50,7 +50,7 @@ export default async function SalesPage({ searchParams }: { searchParams: Promis
       <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
         {page > 1 && (
           <Link
-            href={`?page=${page - 1}&limit=${limit}`}
+            href={`?date_from=${from || ''}&date_to=${to || ''}&page=${page - 1}&limit=${limit}`}
             style={{ padding: '0.5rem 1rem', border: '1px solid #ddd', textDecoration: 'none', borderRadius: '4px' }}
           >
             ← Anterior
@@ -60,12 +60,14 @@ export default async function SalesPage({ searchParams }: { searchParams: Promis
           Página {page}
         </span>
 
-        <Link
-          href={`?page=${page + 1}&limit=${limit}`}
-          style={{ padding: '0.5rem 1rem', border: '1px solid #ddd', textDecoration: 'none', borderRadius: '4px' }}
-        >
-          Siguiente →
-        </Link>
+        {page < 10 && rows.length === limit && (
+          <Link
+            href={`?date_from=${from || ''}&date_to=${to || ''}&page=${page + 1}&limit=${limit}`}
+            style={{ padding: '0.5rem 1rem', border: '1px solid #ddd', textDecoration: 'none', borderRadius: '4px' }}
+          >
+            Siguiente →
+          </Link>
+        )}
       </div>
     </div>
   );

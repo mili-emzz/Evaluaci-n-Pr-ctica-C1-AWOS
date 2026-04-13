@@ -12,7 +12,9 @@ export async function GET(request: NextRequest) {
         const dateTo = searchParams.get('date_to') || undefined;
         const parsed = salesDailySchema.safeParse({
             date_from: dateFrom,
-            date_to: dateTo
+            date_to: dateTo,
+            page: searchParams.get('page'),
+            limit: searchParams.get('limit')
         });
 
         if (!parsed.success) {
@@ -43,6 +45,6 @@ export async function GET(request: NextRequest) {
         return NextResponse.json(
             { error: 'Error interno del servidor' },
             { status: 500 }
-        );
+         );
     }
 }

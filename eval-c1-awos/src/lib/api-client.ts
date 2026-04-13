@@ -35,7 +35,7 @@ export const api = {
   inventoryRisk: (params?: { category_id?: number }) =>
     fetchAPI<{ rows: any[]; selectedCategory?: number }>('/reports/inventory-risk', params),
 
-  customerValue: (params?: { page?: number; limit?: number }) =>
+  customerValue: (params?: { search?: string; page?: number; limit?: number }) =>
     fetchAPI<{ rows: any[]; page: number; limit: number }>('/reports/customer-value', params),
 
   paymentMix: () =>

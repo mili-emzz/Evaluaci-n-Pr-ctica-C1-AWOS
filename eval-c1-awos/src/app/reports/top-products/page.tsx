@@ -65,12 +65,14 @@ export default async function TopProductsPage({ searchParams }: { searchParams: 
           Página {page}
         </span>
 
-        <Link
-          href={`?search=${search}&page=${page + 1}&limit=${limit}`}
-          style={{ padding: '0.5rem 1rem', border: '1px solid #ddd', textDecoration: 'none', borderRadius: '4px' }}
-        >
-          Siguiente →
-        </Link>
+        {page < 10 && rows.length === limit && (
+          <Link
+            href={`?search=${search}&page=${page + 1}&limit=${limit}`}
+            style={{ padding: '0.5rem 1rem', border: '1px solid #ddd', textDecoration: 'none', borderRadius: '4px' }}
+          >
+            Siguiente →
+          </Link>
+        )}
       </div>
 
     </div>
