@@ -9,6 +9,8 @@ export const salesDailySchema = z
   .object({
     date_from: singleDate,
     date_to: singleDate,
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(10)
   })
   .strict();
 
@@ -32,6 +34,7 @@ export const inventoryRiskSchema = z
 
 export const customerValueSchema = z
   .object({
+    search: z.string().optional(),
     page: z.coerce.number().int().min(1).default(1),
     limit: z.coerce.number().int().min(1).max(100).default(10),
   });

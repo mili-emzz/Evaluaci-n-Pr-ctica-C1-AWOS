@@ -7,6 +7,7 @@ export async function GET(request: NextRequest) {
 
     try {
         const searchParams = request.nextUrl.searchParams;
+
         const dateFrom = searchParams.get('date_from') || undefined;
         const dateTo = searchParams.get('date_to') || undefined;
         const parsed = salesDailySchema.safeParse({
@@ -21,6 +22,8 @@ export async function GET(request: NextRequest) {
             );
         }
 
+        const { page, limit } = parsed.data;
+        const offset = (page - 1) * limit;
         const params: any[] = [];
         let sql = 'SELECT * FROM vw_sales_daily';
 
@@ -31,6 +34,7 @@ export async function GET(request: NextRequest) {
             sql += ' ORDER BY sale_date DESC LIMIT 20';
         }
 
+        params.push(limit, offset);
         const rows: SalesDaily[] = await query(sql, params);
 
         return NextResponse.json({ rows });

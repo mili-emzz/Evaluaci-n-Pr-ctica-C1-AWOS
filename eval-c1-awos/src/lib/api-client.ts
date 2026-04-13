@@ -26,7 +26,7 @@ export async function fetchAPI<T>(
 }
 
 export const api = {
-  salesDaily: (params?: { date_from?: string; date_to?: string }) =>
+  salesDaily: (params?: { date_from?: string; date_to?: string, page?: number, limit?: number }) =>
     fetchAPI<{ rows: any[] }>('/reports/sales-daily', params),
 
   topProducts: (params?: { search?: string; page?: number; limit?: number }) =>
