@@ -32,8 +32,8 @@ export const api = {
   topProducts: (params?: { search?: string; page?: number; limit?: number }) =>
     fetchAPI<{ rows: any[]; page: number; limit: number }>('/reports/top-products', params),
 
-  inventoryRisk: (params?: { category_id?: number }) =>
-    fetchAPI<{ rows: any[]; selectedCategory?: number }>('/reports/inventory-risk', params),
+  inventoryRisk: (params?: { search?: string; category_id?: number; page?: number; limit?: number }) =>
+    fetchAPI<{ rows: any[]; selectedCategory?: number; page: number; limit: number }>('/reports/inventory-risk', params),
 
   customerValue: (params?: { search?: string; page?: number; limit?: number }) =>
     fetchAPI<{ rows: any[]; page: number; limit: number }>('/reports/customer-value', params),

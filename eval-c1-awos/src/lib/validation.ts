@@ -23,6 +23,9 @@ export const topProductsSchema = z
 
 export const inventoryRiskSchema = z
   .object({
+    search: z.string().optional(),
+    page: z.coerce.number().int().min(1).max(10).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(10),
     category_id: z
       .preprocess((v) => {
         if (Array.isArray(v)) return v[0];
