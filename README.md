@@ -25,7 +25,7 @@ cd eval-c1-awos
 
 Copia el archivo de ejemplo:
 ```bash
-DATABASE_URL=postgresql://postgres:postgres@localhost:5433/evalc1_db
+DATABASE_URL=postgresql://postgres:postgres@localhost:5433/nombredb
 
 NEXT_PUBLIC_API_URL=http://localhost:3000
 ```
@@ -39,7 +39,7 @@ docker-compose up --build
 
 Espera unos segundos hasta que los contenedores esten listos (veras el mensaje "Ready" en la consola). Despues abre tu navegador en:
 
-**http://localhost:3000**
+**http://localhost:3001**
 
 Para detener el proyecto: presiona `Ctrl+C` en la terminal, o ejecuta:
 ```bash
